@@ -51,7 +51,7 @@ const proxyRequest = async (request, response) => {
         LOGGER.error({message: "Proxy Error", error});
     });
 
-    if (request.body) {
+    if (request.method === 'PUT' && request.body) {
         LOGGER.trace({message: "Proxying Body", data: JSON.stringify(request.body)});
         await publish(request.body);
         proxied_request.end(JSON.stringify(request.body));
