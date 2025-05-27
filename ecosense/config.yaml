@@ -1,6 +1,6 @@
-name: "Ecosense"
-description: "Ecosense"
-version: "0.0.3"
+name: "Ecosense (pyiu)"
+description: "Modified version of starsoccer's Ecosense EcoQube addon (https://github.com/starsoccer/ecosense), with added support for simultaneous output of radon measurements in Bq/m³ and pCi/L."
+version: "0.0.2"
 slug: "ecosense"
 image: "ghcr.io/starsoccer/ecosense/{arch}"
 arch:
