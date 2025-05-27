@@ -21,11 +21,19 @@ const generateDeviceConfig = (
 });
 
 export const publish_config = async (serial_number, fw_version) => {
-    await MQTT.publishAsync(`homeassistant/sensor/${serial_number}/radon/config`, JSON.stringify({
-        "state_topic": `homeassistant/sensor/${serial_number}/radon/state`,
+    await MQTT.publishAsync(`homeassistant/sensor/${serial_number}/radon_bq_per_m3/config`, JSON.stringify({
+        "state_topic": `homeassistant/sensor/${serial_number}/radon_bq_per_m3/state`,
         "unit_of_measurement":"Bq/m³",
-        "unique_id": `${serial_number}-radon`,
-        name: 'Radon',
+        "unique_id": `${serial_number}-radon-bq-per-m3`,
+        name: 'Radon Level (Bq/m³)',
+        ...generateDeviceConfig(serial_number, fw_version),
+    }), {retain: true});
+
+    await MQTT.publishAsync(`homeassistant/sensor/${serial_number}/radon_pci_per_l/config`, JSON.stringify({
+        "state_topic": `homeassistant/sensor/${serial_number}/radon_pci_per_l/state`,
+        "unit_of_measurement":"pCi/L",
+        "unique_id": `${serial_number}-radon-pci-per-l`,
+        name: 'Radon Level (pCi/L)',
         ...generateDeviceConfig(serial_number, fw_version),
     }), {retain: true});
 
@@ -88,8 +96,11 @@ export const publish = async ({
         await publish_config(serial_number, fw_version);
     }
 
-    await MQTT.publishAsync(`homeassistant/sensor/${serial_number}/radon/state`, radon_level.toString());
-    LOGGER.trace({message: "Published radon to MQTT"});
+    await MQTT.publishAsync(`homeassistant/sensor/${serial_number}/radon_bq_per_m3/state`, radon_level.toString());
+    LOGGER.trace({message: "Published radon (Bq/m³) to MQTT"});
+
+    await MQTT.publishAsync(`homeassistant/sensor/${serial_number}/radon_pci_per_l/state`, (radon_level / 37).toString());
+    LOGGER.trace({message: "Published radon (pCi/L) to MQTT"});
 
     await MQTT.publishAsync(`homeassistant/sensor/${serial_number}/status/state`, d_status.toString());
     LOGGER.trace({message: "Published status to MQTT"});
